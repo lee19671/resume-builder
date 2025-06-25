@@ -335,6 +335,10 @@
       background: var(--accent-dark);
     }
   </style>
+
+  <!-- html2pdf script -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"
+          crossorigin="anonymous"></script>
 </head>
 <body>
   <!-- Dark mode toggle -->
@@ -428,3 +432,442 @@
       <!-- Volunteer -->
       <section>
         <h3>Volunteer / Awards</h3>
+        <div id="volunteer-container"></div>
+        <button type="button" id="add-volunteer" class="add-btn">Add Volunteer/Award</button>
+      </section>
+      <!-- Download PDF -->
+      <section>
+        <button id="download-btn">Download PDF</button>
+      </section>
+    </div>
+
+    <!-- Preview Panel -->
+    <div class="preview-panel">
+      <div class="resume-container" id="resume-preview">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+          <div class="photo" id="preview-photo-container">
+            <!-- image inserted via JS -->
+          </div>
+          <h2 id="preview-name">Your Name</h2>
+          <p class="subtitle" id="preview-title">Your Profession</p>
+          <h2>Contact</h2>
+          <ul class="contact-list" id="preview-contact-list">
+            <!-- li items via JS -->
+          </ul>
+          <h2>Skills</h2>
+          <ul class="skills-list" id="preview-skills-list"></ul>
+          <h2>Languages</h2>
+          <ul class="languages-list" id="preview-languages-list"></ul>
+        </aside>
+        <!-- Main Content -->
+        <section class="main-content">
+          <div id="preview-summary" class="section"></div>
+          <div id="preview-experience" class="section"></div>
+          <div id="preview-education" class="section"></div>
+          <div id="preview-projects" class="section"></div>
+          <div id="preview-certifications" class="section"></div>
+          <div id="preview-volunteer" class="section"></div>
+          <div id="preview-cta" class="section"></div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- Templates for dynamic sections -->
+  <template id="experience-template">
+    <div class="dynamic-group experience-group">
+      <button type="button" class="remove-btn">Remove</button>
+      <div class="form-group">
+        <label>Job Title & Company</label>
+        <input type="text" name="expTitle" placeholder="e.g., Paralegal at Law Firm">
+      </div>
+      <div class="form-group">
+        <label>Start – End (e.g., Jun 2018 – Present)</label>
+        <input type="text" name="expDate" placeholder="e.g., Jun 2018 – Present">
+      </div>
+      <div class="form-group">
+        <label>Details / Achievements</label>
+        <textarea name="expDetails" placeholder="Describe your role, achievements"></textarea>
+      </div>
+    </div>
+  </template>
+  <template id="education-template">
+    <div class="dynamic-group education-group">
+      <button type="button" class="remove-btn">Remove</button>
+      <div class="form-group">
+        <label>Degree & Institution</label>
+        <input type="text" name="eduTitle" placeholder="e.g., Paralegal Certificate, XYZ Institute">
+      </div>
+      <div class="form-group">
+        <label>Year or Duration</label>
+        <input type="text" name="eduDate" placeholder="e.g., 2017 – 2018">
+      </div>
+      <div class="form-group">
+        <label>Details (optional)</label>
+        <textarea name="eduDetails" placeholder="Honors, coursework, etc."></textarea>
+      </div>
+    </div>
+  </template>
+  <template id="project-template">
+    <div class="dynamic-group project-group">
+      <button type="button" class="remove-btn">Remove</button>
+      <div class="form-group">
+        <label>Project Name</label>
+        <input type="text" name="projName" placeholder="e.g., Document Automation Tool">
+      </div>
+      <div class="form-group">
+        <label>Date</label>
+        <input type="text" name="projDate" placeholder="e.g., 2021">
+      </div>
+      <div class="form-group">
+        <label>Description & Link</label>
+        <textarea name="projDetails" placeholder="What you built, link if any"></textarea>
+      </div>
+    </div>
+  </template>
+  <template id="certification-template">
+    <div class="dynamic-group certification-group">
+      <button type="button" class="remove-btn">Remove</button>
+      <div class="form-group">
+        <label>Certification Name</label>
+        <input type="text" name="certName" placeholder="Certification Title">
+      </div>
+      <div class="form-group">
+        <label>Issuing Org & Date</label>
+        <input type="text" name="certDate" placeholder="Org, Year">
+      </div>
+    </div>
+  </template>
+  <template id="volunteer-template">
+    <div class="dynamic-group volunteer-group">
+      <button type="button" class="remove-btn">Remove</button>
+      <div class="form-group">
+        <label>Role / Award</label>
+        <input type="text" name="volTitle" placeholder="Role or Award Title">
+      </div>
+      <div class="form-group">
+        <label>Date or Duration</label>
+        <input type="text" name="volDate" placeholder="e.g., 2020 – Present">
+      </div>
+      <div class="form-group">
+        <label>Details (optional)</label>
+        <textarea name="volDetails" placeholder="Description or outcome"></textarea>
+      </div>
+    </div>
+  </template>
+
+  <!-- Builder JS -->
+  <script>
+    (function() {
+      const container = document.documentElement; // for dark mode toggling
+      
+      // Dark mode toggle
+      const toggleBtn = document.getElementById('theme-toggle');
+      if (toggleBtn) {
+        // On load: check localStorage
+        if (localStorage.getItem('theme') === 'dark') {
+          container.classList.add('dark');
+        }
+        toggleBtn.addEventListener('click', () => {
+          const isDark = container.classList.toggle('dark');
+          if (isDark) {
+            localStorage.setItem('theme', 'dark');
+          } else {
+            localStorage.setItem('theme', 'light');
+          }
+        });
+      }
+
+      // Helper escape
+      function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      // Render preview
+      function renderPreview() {
+        // Photo
+        const photoUrl = document.getElementById('input-photo').value.trim();
+        const photoContainer = document.getElementById('preview-photo-container');
+        photoContainer.innerHTML = '';
+        if (photoUrl) {
+          const img = document.createElement('img');
+          img.src = photoUrl;
+          img.alt = document.getElementById('input-name').value.trim() || 'Photo';
+          photoContainer.appendChild(img);
+        }
+
+        // Personal Info
+        const name = document.getElementById('input-name').value.trim() || 'Your Name';
+        const title = document.getElementById('input-title').value.trim() || 'Your Profession';
+        document.getElementById('preview-name').textContent = name;
+        document.getElementById('preview-title').textContent = title;
+
+        // Contact list
+        const contactList = document.getElementById('preview-contact-list');
+        contactList.innerHTML = '';
+        const email = document.getElementById('input-email').value.trim();
+        const phone = document.getElementById('input-phone').value.trim();
+        const linkedin = document.getElementById('input-linkedin').value.trim();
+        const website = document.getElementById('input-website').value.trim();
+        function addContact(label, href, text) {
+          const li = document.createElement('li');
+          const span = document.createElement('span');
+          span.className = 'label';
+          span.textContent = label;
+          const a = document.createElement('a');
+          a.href = href;
+          a.textContent = text;
+          a.target = '_blank'; a.rel = 'noopener';
+          li.appendChild(span);
+          li.appendChild(a);
+          contactList.appendChild(li);
+        }
+        if (email) addContact('Email:', 'mailto:' + email, email);
+        if (phone) addContact('Phone:', 'tel:' + phone, phone);
+        if (linkedin) addContact('LinkedIn:', linkedin, linkedin.replace(/^https?:\/\//, ''));
+        if (website) addContact('Website:', website, website.replace(/^https?:\/\//, ''));
+
+        // Summary
+        const summaryText = document.getElementById('input-summary').value.trim();
+        const summarySec = document.getElementById('preview-summary');
+        if (summaryText) {
+          summarySec.innerHTML = '<h2>Summary</h2><p>' + escapeHtml(summaryText) + '</p>';
+        } else {
+          summarySec.innerHTML = '';
+        }
+
+        // Experience
+        const expContainer = document.getElementById('preview-experience');
+        const expGroups = document.querySelectorAll('.experience-group');
+        if (expGroups.length) {
+          let html = '<h2>Experience</h2>';
+          expGroups.forEach(group => {
+            const titleCompany = group.querySelector('input[name="expTitle"]').value.trim();
+            const date = group.querySelector('input[name="expDate"]').value.trim();
+            const details = group.querySelector('textarea[name="expDetails"]').value.trim();
+            if (titleCompany) {
+              html += '<div class="item"><div class="item-header"><h3>'
+                + escapeHtml(titleCompany) + '</h3>';
+              if (date) html += '<div class="item-meta">' + escapeHtml(date) + '</div>';
+              html += '</div>';
+              if (details) {
+                html += '<div class="item-details"><ul>';
+                details.split('\n').forEach(line => {
+                  const t = line.trim();
+                  if (t) html += '<li>' + escapeHtml(t) + '</li>';
+                });
+                html += '</ul></div>';
+              }
+              html += '</div>';
+            }
+          });
+          expContainer.innerHTML = html;
+        } else {
+          expContainer.innerHTML = '';
+        }
+
+        // Education
+        const eduContainer = document.getElementById('preview-education');
+        const eduGroups = document.querySelectorAll('.education-group');
+        if (eduGroups.length) {
+          let html = '<h2>Education</h2>';
+          eduGroups.forEach(group => {
+            const titleInst = group.querySelector('input[name="eduTitle"]').value.trim();
+            const date = group.querySelector('input[name="eduDate"]').value.trim();
+            const details = group.querySelector('textarea[name="eduDetails"]').value.trim();
+            if (titleInst) {
+              html += '<div class="item"><div class="item-header"><h3>'
+                + escapeHtml(titleInst) + '</h3>';
+              if (date) html += '<div class="item-meta">' + escapeHtml(date) + '</div>';
+              html += '</div>';
+              if (details) {
+                html += '<div class="item-details"><p>' + escapeHtml(details) + '</p></div>';
+              }
+              html += '</div>';
+            }
+          });
+          eduContainer.innerHTML = html;
+        } else {
+          eduContainer.innerHTML = '';
+        }
+
+        // Skills
+        const skillsContainer = document.getElementById('preview-skills-list');
+        const skillsRaw = document.getElementById('input-skills').value.trim();
+        skillsContainer.innerHTML = '';
+        if (skillsRaw) {
+          const skillsArr = skillsRaw.split(',').map(s => s.trim()).filter(s => s);
+          skillsArr.forEach(s => {
+            const li = document.createElement('li');
+            li.textContent = s;
+            skillsContainer.appendChild(li);
+          });
+        }
+
+        // Languages
+        const langContainer = document.getElementById('preview-languages-list');
+        const langRaw = document.getElementById('input-languages').value.trim();
+        langContainer.innerHTML = '';
+        if (langRaw) {
+          const langArr = langRaw.split(',').map(s => s.trim()).filter(s => s);
+          langArr.forEach(s => {
+            const li = document.createElement('li');
+            li.textContent = s;
+            langContainer.appendChild(li);
+          });
+        }
+
+        // Projects
+        const projContainer = document.getElementById('preview-projects');
+        const projGroups = document.querySelectorAll('.project-group');
+        if (projGroups.length) {
+          let html = '<h2>Projects</h2>';
+          projGroups.forEach(group => {
+            const name = group.querySelector('input[name="projName"]').value.trim();
+            const date = group.querySelector('input[name="projDate"]').value.trim();
+            const details = group.querySelector('textarea[name="projDetails"]').value.trim();
+            if (name) {
+              html += '<div class="item"><div class="item-header"><h3>'
+                + escapeHtml(name) + '</h3>';
+              if (date) html += '<div class="item-meta">' + escapeHtml(date) + '</div>';
+              html += '</div>';
+              if (details) {
+                html += '<div class="item-details"><p>' + escapeHtml(details) + '</p></div>';
+              }
+              html += '</div>';
+            }
+          });
+          projContainer.innerHTML = html;
+        } else {
+          projContainer.innerHTML = '';
+        }
+
+        // Certifications
+        const certContainer = document.getElementById('preview-certifications');
+        const certGroups = document.querySelectorAll('.certification-group');
+        if (certGroups.length) {
+          let html = '<h2>Certifications</h2>';
+          certGroups.forEach(group => {
+            const name = group.querySelector('input[name="certName"]').value.trim();
+            const date = group.querySelector('input[name="certDate"]').value.trim();
+            if (name) {
+              html += '<div class="item"><div class="item-header"><h3>'
+                + escapeHtml(name) + '</h3>';
+              if (date) html += '<div class="item-meta">' + escapeHtml(date) + '</div>';
+              html += '</div></div>';
+            }
+          });
+          certContainer.innerHTML = html;
+        } else {
+          certContainer.innerHTML = '';
+        }
+
+        // Volunteer / Awards
+        const volContainer = document.getElementById('preview-volunteer');
+        const volGroups = document.querySelectorAll('.volunteer-group');
+        if (volGroups.length) {
+          let html = '<h2>Volunteer & Awards</h2>';
+          volGroups.forEach(group => {
+            const title = group.querySelector('input[name="volTitle"]').value.trim();
+            const date = group.querySelector('input[name="volDate"]').value.trim();
+            const details = group.querySelector('textarea[name="volDetails"]').value.trim();
+            if (title) {
+              html += '<div class="item"><div class="item-header"><h3>'
+                + escapeHtml(title) + '</h3>';
+              if (date) html += '<div class="item-meta">' + escapeHtml(date) + '</div>';
+              html += '</div>';
+              if (details) {
+                html += '<div class="item-details"><p>' + escapeHtml(details) + '</p></div>';
+              }
+              html += '</div>';
+            }
+          });
+          volContainer.innerHTML = html;
+        } else {
+          volContainer.innerHTML = '';
+        }
+
+        // CTA: Download PDF
+        const ctaContainer = document.getElementById('preview-cta');
+        ctaContainer.innerHTML = '';
+        const btn = document.createElement('button');
+        btn.id = 'download-btn';
+        btn.textContent = 'Download PDF';
+        btn.addEventListener('click', () => {
+          console.log('Download PDF clicked');
+          const previewEl = document.getElementById('resume-preview');
+          if (!previewEl) {
+            console.error('No preview element found');
+            return;
+          }
+          const filenameBase = name.replace(/\s+/g, '_').toLowerCase() || 'resume';
+          const opt = {
+            margin:       [0.5, 0.5, 0.5, 0.5],
+            filename:     filenameBase + '.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2 },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+          };
+          try {
+            html2pdf().set(opt).from(previewEl).save()
+              .then(() => console.log('PDF saved'))
+              .catch(err => console.error('html2pdf error:', err));
+          } catch (e) {
+            console.error('Exception calling html2pdf():', e);
+          }
+        });
+        ctaContainer.appendChild(btn);
+      }
+
+      // Helper to add dynamic groups
+      function addGroup(containerId, templateId) {
+        const containerEl = document.getElementById(containerId);
+        const template = document.getElementById(templateId);
+        const clone = template.content.firstElementChild.cloneNode(true);
+        const removeBtn = clone.querySelector('.remove-btn');
+        removeBtn.addEventListener('click', () => {
+          containerEl.removeChild(clone);
+          renderPreview();
+        });
+        clone.querySelectorAll('input, textarea').forEach(el => {
+          el.addEventListener('input', renderPreview);
+        });
+        containerEl.appendChild(clone);
+        renderPreview();
+      }
+
+      // Bind add buttons
+      document.getElementById('add-experience').addEventListener('click', () => {
+        addGroup('experience-container', 'experience-template');
+      });
+      document.getElementById('add-education').addEventListener('click', () => {
+        addGroup('education-container', 'education-template');
+      });
+      document.getElementById('add-project').addEventListener('click', () => {
+        addGroup('projects-container', 'project-template');
+      });
+      document.getElementById('add-certification').addEventListener('click', () => {
+        addGroup('certifications-container', 'certification-template');
+      });
+      document.getElementById('add-volunteer').addEventListener('click', () => {
+        addGroup('volunteer-container', 'volunteer-template');
+      });
+
+      // Bind simple inputs
+      [
+        'input-photo','input-name','input-title','input-email','input-phone',
+        'input-linkedin','input-website','input-summary','input-skills','input-languages'
+      ].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', renderPreview);
+      });
+
+      // Initial render
+      document.addEventListener('DOMContentLoaded', renderPreview);
+    })();
+  </script>
+</body>
+</html>
