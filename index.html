@@ -107,6 +107,7 @@
     .form-group input[type="email"],
     .form-group input[type="tel"],
     .form-group input[type="url"],
+    .form-group input[type="date"],
     .form-group textarea {
       width: 100%;
       padding: 0.5rem;
@@ -147,6 +148,14 @@
     }
     .dynamic-group .remove-btn:hover {
       text-decoration: underline;
+    }
+    /* Privacy note */
+    .privacy-note {
+      font-size: 0.85rem;
+      color: var(--muted-color);
+      margin-top: 1.5rem;
+      border-top: 1px solid #ddd;
+      padding-top: 1rem;
     }
 
     /* ====== Preview Panel ====== */
@@ -195,7 +204,9 @@
     }
     .contact-list,
     .skills-list,
-    .languages-list {
+    .languages-list,
+    .software-list,
+    .practice-list {
       list-style: none;
       padding: 0;
       margin: 0 0 var(--gutter) 0;
@@ -211,7 +222,9 @@
       display: inline-block;
       width: 70px;
     }
-    .skills-list li {
+    .skills-list li,
+    .software-list li,
+    .practice-list li {
       display: inline-block;
       background: var(--accent-color);
       color: #fff;
@@ -348,6 +361,7 @@
     <!-- Form Panel -->
     <div class="form-panel">
       <h2>Resume Builder</h2>
+
       <!-- Photo URL -->
       <section>
         <h3>Photo</h3>
@@ -356,6 +370,7 @@
           <input type="url" id="input-photo" placeholder="https://example.com/photo.jpg">
         </div>
       </section>
+
       <!-- Personal Info -->
       <section>
         <h3>Personal Info</h3>
@@ -365,7 +380,7 @@
         </div>
         <div class="form-group">
           <label for="input-title">Title / Profession</label>
-          <input type="text" id="input-title" placeholder="e.g., Web Developer">
+          <input type="text" id="input-title" placeholder="e.g., Paralegal Specialist">
         </div>
         <div class="form-group">
           <label for="input-email">Email</label>
@@ -384,6 +399,7 @@
           <input type="url" id="input-website" placeholder="https://yourwebsite.com">
         </div>
       </section>
+
       <!-- Summary -->
       <section>
         <h3>Summary / Profile</h3>
@@ -391,54 +407,102 @@
           <textarea id="input-summary" placeholder="Brief summary of your background"></textarea>
         </div>
       </section>
+
       <!-- Experience -->
       <section>
         <h3>Experience</h3>
         <div id="experience-container"></div>
         <button type="button" id="add-experience" class="add-btn">Add Experience</button>
       </section>
+
       <!-- Education -->
       <section>
         <h3>Education</h3>
         <div id="education-container"></div>
         <button type="button" id="add-education" class="add-btn">Add Education</button>
       </section>
+
       <!-- Skills -->
       <section>
         <h3>Skills (comma-separated)</h3>
         <div class="form-group">
-          <input type="text" id="input-skills" placeholder="JavaScript, HTML, CSS, ...">
+          <input type="text" id="input-skills" placeholder="Legal Research, Drafting, ...">
         </div>
       </section>
+
       <!-- Languages -->
       <section>
         <h3>Languages (comma-separated)</h3>
         <div class="form-group">
-          <input type="text" id="input-languages" placeholder="English, Spanish, ...">
+          <input type="text" id="input-languages" placeholder="English, French, ...">
         </div>
       </section>
+
+      <!-- Legal Software Proficiency -->
+      <section>
+        <h3>Legal Software Proficiency (comma-separated)</h3>
+        <div class="form-group">
+          <input type="text" id="input-software" placeholder="Clio, Westlaw, LexisNexis, ...">
+        </div>
+      </section>
+
+      <!-- Practice Areas / Case Types -->
+      <section>
+        <h3>Practice Areas / Case Types (comma-separated)</h3>
+        <div class="form-group">
+          <input type="text" id="input-practice" placeholder="Real Estate, Litigation Support, Immigration, ...">
+        </div>
+      </section>
+
       <!-- Projects -->
       <section>
         <h3>Projects</h3>
         <div id="projects-container"></div>
         <button type="button" id="add-project" class="add-btn">Add Project</button>
       </section>
+
       <!-- Certifications -->
       <section>
         <h3>Certifications</h3>
         <div id="certifications-container"></div>
         <button type="button" id="add-certification" class="add-btn">Add Certification</button>
       </section>
+
       <!-- Volunteer -->
       <section>
         <h3>Volunteer / Awards</h3>
         <div id="volunteer-container"></div>
         <button type="button" id="add-volunteer" class="add-btn">Add Volunteer/Award</button>
       </section>
+
+      <!-- Notary Commission Details -->
+      <section>
+        <h3>Notary Commission Details</h3>
+        <div class="form-group">
+          <label for="input-notary-number">Commission Number</label>
+          <input type="text" id="input-notary-number" placeholder="e.g., 123456789">
+        </div>
+        <div class="form-group">
+          <label for="input-notary-jurisdiction">Jurisdiction</label>
+          <input type="text" id="input-notary-jurisdiction" placeholder="e.g., Ontario, Canada">
+        </div>
+        <div class="form-group">
+          <label for="input-notary-date">Commission Date</label>
+          <input type="date" id="input-notary-date">
+        </div>
+      </section>
+
       <!-- Download PDF -->
       <section>
         <button id="download-btn">Download PDF</button>
       </section>
+
+      <!-- Privacy Note -->
+      <p class="privacy-note">
+        Your resume data stays in your browser’s localStorage and is not sent to any server by default.
+        You can clear your browser data anytime to remove it. If you choose to share or save externally,
+        ensure you trust the environment.
+      </p>
     </div>
 
     <!-- Preview Panel -->
@@ -459,6 +523,12 @@
           <ul class="skills-list" id="preview-skills-list"></ul>
           <h2>Languages</h2>
           <ul class="languages-list" id="preview-languages-list"></ul>
+          <h2>Software</h2>
+          <ul class="software-list" id="preview-software-list"></ul>
+          <h2>Practice Areas</h2>
+          <ul class="practice-list" id="preview-practice-list"></ul>
+          <h2>Notary Commission</h2>
+          <ul class="contact-list" id="preview-notary-list"></ul>
         </aside>
         <!-- Main Content -->
         <section class="main-content">
@@ -468,6 +538,7 @@
           <div id="preview-projects" class="section"></div>
           <div id="preview-certifications" class="section"></div>
           <div id="preview-volunteer" class="section"></div>
+          <!-- Notary Commission shown in sidebar; no main-content section -->
           <div id="preview-cta" class="section"></div>
         </section>
       </div>
@@ -561,34 +632,29 @@
   <script>
     (function() {
       const container = document.documentElement; // for dark mode toggling
-      
-      // Dark mode toggle
+
+      // DARK MODE TOGGLE
       const toggleBtn = document.getElementById('theme-toggle');
       if (toggleBtn) {
-        // On load: check localStorage
         if (localStorage.getItem('theme') === 'dark') {
           container.classList.add('dark');
         }
         toggleBtn.addEventListener('click', () => {
           const isDark = container.classList.toggle('dark');
-          if (isDark) {
-            localStorage.setItem('theme', 'dark');
-          } else {
-            localStorage.setItem('theme', 'light');
-          }
+          localStorage.setItem('theme', isDark ? 'dark' : 'light');
         });
       }
 
-      // Helper escape
+      // Helper: escape HTML
       function escapeHtml(text) {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
       }
 
-      // Render preview
+      // RENDER PREVIEW
       function renderPreview() {
-        // Photo
+        // PHOTO
         const photoUrl = document.getElementById('input-photo').value.trim();
         const photoContainer = document.getElementById('preview-photo-container');
         photoContainer.innerHTML = '';
@@ -599,13 +665,13 @@
           photoContainer.appendChild(img);
         }
 
-        // Personal Info
+        // PERSONAL INFO
         const name = document.getElementById('input-name').value.trim() || 'Your Name';
         const title = document.getElementById('input-title').value.trim() || 'Your Profession';
         document.getElementById('preview-name').textContent = name;
         document.getElementById('preview-title').textContent = title;
 
-        // Contact list
+        // CONTACT
         const contactList = document.getElementById('preview-contact-list');
         contactList.innerHTML = '';
         const email = document.getElementById('input-email').value.trim();
@@ -630,7 +696,7 @@
         if (linkedin) addContact('LinkedIn:', linkedin, linkedin.replace(/^https?:\/\//, ''));
         if (website) addContact('Website:', website, website.replace(/^https?:\/\//, ''));
 
-        // Summary
+        // SUMMARY
         const summaryText = document.getElementById('input-summary').value.trim();
         const summarySec = document.getElementById('preview-summary');
         if (summaryText) {
@@ -639,7 +705,7 @@
           summarySec.innerHTML = '';
         }
 
-        // Experience
+        // EXPERIENCE
         const expContainer = document.getElementById('preview-experience');
         const expGroups = document.querySelectorAll('.experience-group');
         if (expGroups.length) {
@@ -669,7 +735,7 @@
           expContainer.innerHTML = '';
         }
 
-        // Education
+        // EDUCATION
         const eduContainer = document.getElementById('preview-education');
         const eduGroups = document.querySelectorAll('.education-group');
         if (eduGroups.length) {
@@ -694,7 +760,7 @@
           eduContainer.innerHTML = '';
         }
 
-        // Skills
+        // SKILLS
         const skillsContainer = document.getElementById('preview-skills-list');
         const skillsRaw = document.getElementById('input-skills').value.trim();
         skillsContainer.innerHTML = '';
@@ -707,7 +773,7 @@
           });
         }
 
-        // Languages
+        // LANGUAGES
         const langContainer = document.getElementById('preview-languages-list');
         const langRaw = document.getElementById('input-languages').value.trim();
         langContainer.innerHTML = '';
@@ -720,7 +786,33 @@
           });
         }
 
-        // Projects
+        // SOFTWARE
+        const softwareContainer = document.getElementById('preview-software-list');
+        const softwareRaw = document.getElementById('input-software').value.trim();
+        softwareContainer.innerHTML = '';
+        if (softwareRaw) {
+          const softArr = softwareRaw.split(',').map(s => s.trim()).filter(s => s);
+          softArr.forEach(s => {
+            const li = document.createElement('li');
+            li.textContent = s;
+            softwareContainer.appendChild(li);
+          });
+        }
+
+        // PRACTICE AREAS
+        const practiceContainer = document.getElementById('preview-practice-list');
+        const practiceRaw = document.getElementById('input-practice').value.trim();
+        practiceContainer.innerHTML = '';
+        if (practiceRaw) {
+          const pracArr = practiceRaw.split(',').map(s => s.trim()).filter(s => s);
+          pracArr.forEach(s => {
+            const li = document.createElement('li');
+            li.textContent = s;
+            practiceContainer.appendChild(li);
+          });
+        }
+
+        // PROJECTS
         const projContainer = document.getElementById('preview-projects');
         const projGroups = document.querySelectorAll('.project-group');
         if (projGroups.length) {
@@ -745,7 +837,7 @@
           projContainer.innerHTML = '';
         }
 
-        // Certifications
+        // CERTIFICATIONS
         const certContainer = document.getElementById('preview-certifications');
         const certGroups = document.querySelectorAll('.certification-group');
         if (certGroups.length) {
@@ -765,7 +857,7 @@
           certContainer.innerHTML = '';
         }
 
-        // Volunteer / Awards
+        // VOLUNTEER / AWARDS
         const volContainer = document.getElementById('preview-volunteer');
         const volGroups = document.querySelectorAll('.volunteer-group');
         if (volGroups.length) {
@@ -788,6 +880,30 @@
           volContainer.innerHTML = html;
         } else {
           volContainer.innerHTML = '';
+        }
+
+        // NOTARY COMMISSION in sidebar
+        const notaryList = document.getElementById('preview-notary-list');
+        notaryList.innerHTML = '';
+        const notNum = document.getElementById('input-notary-number').value.trim();
+        const notJur = document.getElementById('input-notary-jurisdiction').value.trim();
+        const notDate = document.getElementById('input-notary-date').value;
+        if (notNum || notJur || notDate) {
+          if (notNum) {
+            const li = document.createElement('li');
+            li.innerHTML = '<span class="label">Commission#:</span> ' + escapeHtml(notNum);
+            notaryList.appendChild(li);
+          }
+          if (notJur) {
+            const li = document.createElement('li');
+            li.innerHTML = '<span class="label">Jurisdiction:</span> ' + escapeHtml(notJur);
+            notaryList.appendChild(li);
+          }
+          if (notDate) {
+            const li = document.createElement('li');
+            li.innerHTML = '<span class="label">Date:</span> ' + escapeHtml(notDate);
+            notaryList.appendChild(li);
+          }
         }
 
         // CTA: Download PDF
@@ -820,9 +936,12 @@
           }
         });
         ctaContainer.appendChild(btn);
+
+        // After rendering preview, also save form state
+        saveToLocal();
       }
 
-      // Helper to add dynamic groups
+      // DYNAMIC GROUP helper
       function addGroup(containerId, templateId) {
         const containerEl = document.getElementById(containerId);
         const template = document.getElementById(templateId);
@@ -839,7 +958,7 @@
         renderPreview();
       }
 
-      // Bind add buttons
+      // BIND add buttons
       document.getElementById('add-experience').addEventListener('click', () => {
         addGroup('experience-container', 'experience-template');
       });
@@ -856,17 +975,172 @@
         addGroup('volunteer-container', 'volunteer-template');
       });
 
-      // Bind simple inputs
+      // BIND simple inputs
       [
         'input-photo','input-name','input-title','input-email','input-phone',
-        'input-linkedin','input-website','input-summary','input-skills','input-languages'
+        'input-linkedin','input-website','input-summary','input-skills',
+        'input-languages','input-software','input-practice',
+        'input-notary-number','input-notary-jurisdiction','input-notary-date'
       ].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.addEventListener('input', renderPreview);
       });
 
-      // Initial render
-      document.addEventListener('DOMContentLoaded', renderPreview);
+      // LOCALSTORAGE AUTOSAVE / LOAD
+      function collectData() {
+        const data = {};
+        data.inputPhoto = document.getElementById('input-photo').value.trim();
+        data.inputName = document.getElementById('input-name').value.trim();
+        data.inputTitle = document.getElementById('input-title').value.trim();
+        data.inputEmail = document.getElementById('input-email').value.trim();
+        data.inputPhone = document.getElementById('input-phone').value.trim();
+        data.inputLinkedin = document.getElementById('input-linkedin').value.trim();
+        data.inputWebsite = document.getElementById('input-website').value.trim();
+        data.inputSummary = document.getElementById('input-summary').value.trim();
+        data.inputSkills = document.getElementById('input-skills').value.trim();
+        data.inputLanguages = document.getElementById('input-languages').value.trim();
+        data.inputSoftware = document.getElementById('input-software').value.trim();
+        data.inputPractice = document.getElementById('input-practice').value.trim();
+        data.inputNotaryNumber = document.getElementById('input-notary-number').value.trim();
+        data.inputNotaryJurisdiction = document.getElementById('input-notary-jurisdiction').value.trim();
+        data.inputNotaryDate = document.getElementById('input-notary-date').value;
+
+        // Dynamic arrays
+        data.experience = [];
+        document.querySelectorAll('.experience-group').forEach(group => {
+          const obj = {
+            expTitle: group.querySelector('input[name="expTitle"]').value.trim(),
+            expDate: group.querySelector('input[name="expDate"]').value.trim(),
+            expDetails: group.querySelector('textarea[name="expDetails"]').value.trim()
+          };
+          if (obj.expTitle) data.experience.push(obj);
+        });
+        data.education = [];
+        document.querySelectorAll('.education-group').forEach(group => {
+          const obj = {
+            eduTitle: group.querySelector('input[name="eduTitle"]').value.trim(),
+            eduDate: group.querySelector('input[name="eduDate"]').value.trim(),
+            eduDetails: group.querySelector('textarea[name="eduDetails"]').value.trim()
+          };
+          if (obj.eduTitle) data.education.push(obj);
+        });
+        data.projects = [];
+        document.querySelectorAll('.project-group').forEach(group => {
+          const obj = {
+            projName: group.querySelector('input[name="projName"]').value.trim(),
+            projDate: group.querySelector('input[name="projDate"]').value.trim(),
+            projDetails: group.querySelector('textarea[name="projDetails"]').value.trim()
+          };
+          if (obj.projName) data.projects.push(obj);
+        });
+        data.certifications = [];
+        document.querySelectorAll('.certification-group').forEach(group => {
+          const obj = {
+            certName: group.querySelector('input[name="certName"]').value.trim(),
+            certDate: group.querySelector('input[name="certDate"]').value.trim()
+          };
+          if (obj.certName) data.certifications.push(obj);
+        });
+        data.volunteer = [];
+        document.querySelectorAll('.volunteer-group').forEach(group => {
+          const obj = {
+            volTitle: group.querySelector('input[name="volTitle"]').value.trim(),
+            volDate: group.querySelector('input[name="volDate"]').value.trim(),
+            volDetails: group.querySelector('textarea[name="volDetails"]').value.trim()
+          };
+          if (obj.volTitle) data.volunteer.push(obj);
+        });
+        return data;
+      }
+      function saveToLocal() {
+        try {
+          const data = collectData();
+          localStorage.setItem('resumeBuilderData', JSON.stringify(data));
+          console.log('Form data saved to localStorage');
+        } catch (e) {
+          console.warn('Failed to save to localStorage:', e);
+        }
+      }
+      function loadFromLocal() {
+        try {
+          const str = localStorage.getItem('resumeBuilderData');
+          if (!str) return;
+          const data = JSON.parse(str);
+          // Simple fields
+          if (data.inputPhoto) document.getElementById('input-photo').value = data.inputPhoto;
+          if (data.inputName) document.getElementById('input-name').value = data.inputName;
+          if (data.inputTitle) document.getElementById('input-title').value = data.inputTitle;
+          if (data.inputEmail) document.getElementById('input-email').value = data.inputEmail;
+          if (data.inputPhone) document.getElementById('input-phone').value = data.inputPhone;
+          if (data.inputLinkedin) document.getElementById('input-linkedin').value = data.inputLinkedin;
+          if (data.inputWebsite) document.getElementById('input-website').value = data.inputWebsite;
+          if (data.inputSummary) document.getElementById('input-summary').value = data.inputSummary;
+          if (data.inputSkills) document.getElementById('input-skills').value = data.inputSkills;
+          if (data.inputLanguages) document.getElementById('input-languages').value = data.inputLanguages;
+          if (data.inputSoftware) document.getElementById('input-software').value = data.inputSoftware;
+          if (data.inputPractice) document.getElementById('input-practice').value = data.inputPractice;
+          if (data.inputNotaryNumber) document.getElementById('input-notary-number').value = data.inputNotaryNumber;
+          if (data.inputNotaryJurisdiction) document.getElementById('input-notary-jurisdiction').value = data.inputNotaryJurisdiction;
+          if (data.inputNotaryDate) document.getElementById('input-notary-date').value = data.inputNotaryDate;
+
+          // Dynamic arrays: recreate groups
+          if (Array.isArray(data.experience)) {
+            data.experience.forEach(item => {
+              addGroup('experience-container', 'experience-template');
+              const group = document.querySelectorAll('.experience-group:last-child')[0];
+              group.querySelector('input[name="expTitle"]').value = item.expTitle || '';
+              group.querySelector('input[name="expDate"]').value = item.expDate || '';
+              group.querySelector('textarea[name="expDetails"]').value = item.expDetails || '';
+            });
+          }
+          if (Array.isArray(data.education)) {
+            data.education.forEach(item => {
+              addGroup('education-container', 'education-template');
+              const group = document.querySelectorAll('.education-group:last-child')[0];
+              group.querySelector('input[name="eduTitle"]').value = item.eduTitle || '';
+              group.querySelector('input[name="eduDate"]').value = item.eduDate || '';
+              group.querySelector('textarea[name="eduDetails"]').value = item.eduDetails || '';
+            });
+          }
+          if (Array.isArray(data.projects)) {
+            data.projects.forEach(item => {
+              addGroup('projects-container', 'project-template');
+              const group = document.querySelectorAll('.project-group:last-child')[0];
+              group.querySelector('input[name="projName"]').value = item.projName || '';
+              group.querySelector('input[name="projDate"]').value = item.projDate || '';
+              group.querySelector('textarea[name="projDetails"]').value = item.projDetails || '';
+            });
+          }
+          if (Array.isArray(data.certifications)) {
+            data.certifications.forEach(item => {
+              addGroup('certifications-container', 'certification-template');
+              const group = document.querySelectorAll('.certification-group:last-child')[0];
+              group.querySelector('input[name="certName"]').value = item.certName || '';
+              group.querySelector('input[name="certDate"]').value = item.certDate || '';
+            });
+          }
+          if (Array.isArray(data.volunteer)) {
+            data.volunteer.forEach(item => {
+              addGroup('volunteer-container', 'volunteer-template');
+              const group = document.querySelectorAll('.volunteer-group:last-child')[0];
+              group.querySelector('input[name="volTitle"]').value = item.volTitle || '';
+              group.querySelector('input[name="volDate"]').value = item.volDate || '';
+              group.querySelector('textarea[name="volDetails"]').value = item.volDetails || '';
+            });
+          }
+          console.log('Loaded form data from localStorage');
+        } catch (e) {
+          console.warn('Failed to load from localStorage:', e);
+        }
+      }
+
+      // INITIALIZE
+      document.addEventListener('DOMContentLoaded', () => {
+        // First load saved data
+        loadFromLocal();
+        // Then initial render
+        renderPreview();
+      });
     })();
   </script>
 </body>
