@@ -1,97 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
   <title>Resume Builder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <!-- Google Font -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
-    rel="stylesheet"
-  />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- html2pdf.js for PDF download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"
+          crossorigin="anonymous"></script>
+
   <style>
-    /* ===========================
-       CSS Variables & Base
-       =========================== */
-    :root {
-      --font-family: 'Inter', sans-serif;
-      --bg-color: #f5f7fa;
-      --text-color: #2c3e50;
-      --accent-color: #3498db;
-      --accent-dark: #2980b9;
-      --muted-color: #7f8c8d;
-      --section-bg: #ffffff;
-      --sidebar-bg: #ecf0f1;
-      --max-width: 900px;
-      --gutter: 1.5rem;
-      --radius: 6px;
-    }
-    * {
-      box-sizing: border-box;
-    }
     body {
+      font-family: 'Inter', sans-serif;
+      background: #f2f4f6;
       margin: 0;
       padding: 0;
-      font-family: var(--font-family);
-      background: var(--bg-color);
-      color: var(--text-color);
+    }
+    .container {
       display: flex;
       flex-direction: column;
       min-height: 100vh;
-    }
-    a {
-      color: var(--accent-color);
-      text-decoration: none;
-    }
-    a:hover,
-    a:focus {
-      color: var(--accent-dark);
-    }
-    img {
-      max-width: 100%;
-      height: auto;
-      display: block;
-    }
-    button { cursor: pointer; }
-    /* Dark Mode Variables */
-    .dark {
-      --bg-color: #2c3e50;
-      --text-color: #ecf0f1;
-      --section-bg: #34495e;
-      --sidebar-bg: #3b4a59;
-      --muted-color: #bdc3c7;
-      --accent-color: #e67e22;
-      --accent-dark: #d35400;
-    }
-
-    /* ====== Layout: form + preview ====== */
-    .container {
-      display: flex;
-      flex: 1 1 auto;
-      overflow: hidden;
-      flex-direction: column;
     }
     @media(min-width: 900px) {
       .container {
         flex-direction: row;
       }
     }
-    /* ====== Form Panel ====== */
     .form-panel {
       background: #fff;
-      border-right: 1px solid #ddd;
       padding: 1rem;
       flex: 1 1 0;
       overflow-y: auto;
-      min-height: 0;
+      border-right: 1px solid #ddd;
     }
     .form-panel h2 {
       margin-top: 0;
       font-size: 1.5rem;
-      color: var(--accent-color);
-      border-bottom: 2px solid var(--accent-color);
+      color: #3498db;
+      border-bottom: 2px solid #3498db;
       padding-bottom: 0.25rem;
       margin-bottom: 1rem;
     }
@@ -107,32 +58,33 @@
     .form-group input[type="email"],
     .form-group input[type="tel"],
     .form-group input[type="url"],
-    .form-group input[type="date"],
     .form-group textarea {
       width: 100%;
       padding: 0.5rem;
       border: 1px solid #ccc;
-      border-radius: var(--radius);
+      border-radius: 6px;
       font-size: 1rem;
     }
     .form-group textarea { resize: vertical; min-height: 3rem; }
     .add-btn {
       display: inline-block;
       padding: 0.4rem 0.8rem;
-      background: var(--accent-color);
+      background: #3498db;
       color: #fff;
       border: none;
-      border-radius: var(--radius);
+      border-radius: 6px;
       font-size: 0.9rem;
       margin-bottom: 1rem;
+      cursor: pointer;
     }
     .add-btn:hover {
-      background: var(--accent-dark);
+      background: #2980b9;
     }
+
     .dynamic-group {
       border: 1px solid #ddd;
       padding: 1rem;
-      border-radius: var(--radius);
+      border-radius: 6px;
       margin-bottom: 1rem;
       position: relative;
       background: #fafafa;
@@ -145,22 +97,14 @@
       border: none;
       color: #d00;
       font-size: 0.9rem;
+      cursor: pointer;
     }
     .dynamic-group .remove-btn:hover {
       text-decoration: underline;
     }
-    /* Privacy note */
-    .privacy-note {
-      font-size: 0.85rem;
-      color: var(--muted-color);
-      margin-top: 1.5rem;
-      border-top: 1px solid #ddd;
-      padding-top: 1rem;
-    }
 
-    /* ====== Preview Panel ====== */
     .preview-panel {
-      background: var(--bg-color);
+      background: #fff;
       padding: 1rem;
       flex: 1 1 0;
       overflow-y: auto;
@@ -168,86 +112,76 @@
     }
     .resume-container {
       width: 90%;
-      max-width: var(--max-width);
+      max-width: 900px;
       margin: auto;
-      padding: var(--gutter) 0;
       display: grid;
       grid-template-columns: 1fr;
-      gap: var(--gutter);
+      gap: 1.5rem;
     }
     @media (min-width: 768px) {
       .resume-container {
         grid-template-columns: 1fr 2fr;
       }
     }
-    /* Sidebar */
     .sidebar {
-      background: var(--sidebar-bg);
-      padding: var(--gutter);
-      border-radius: var(--radius);
+      background: #ecf0f1;
+      padding: 1rem;
+      border-radius: 6px;
     }
-    .sidebar .photo {
+    .sidebar .photo img {
       width: 100%;
       border-radius: 50%;
-      overflow: hidden;
-      margin-bottom: var(--gutter);
+      display: block;
+      margin-bottom: 1rem;
     }
     .sidebar h2 {
       margin: 0 0 0.5rem 0;
       font-size: 1.25rem;
-      color: var(--text-color);
+      color: #2c3e50;
     }
     .sidebar p.subtitle {
-      margin: 0 0 var(--gutter) 0;
-      color: var(--muted-color);
+      margin: 0 0 1rem 0;
+      color: #7f8c8d;
       font-weight: 400;
     }
-    .contact-list,
-    .skills-list,
-    .languages-list,
-    .software-list,
-    .practice-list {
+    .contact-list, .skills-list, .languages-list {
       list-style: none;
       padding: 0;
-      margin: 0 0 var(--gutter) 0;
+      margin: 0 0 1rem 0;
     }
-    .contact-list li,
-    .languages-list li {
+    .contact-list li, .languages-list li {
       margin-bottom: 0.5rem;
       font-size: 0.95rem;
     }
     .contact-list li span.label {
       font-weight: 600;
-      color: var(--muted-color);
+      color: #7f8c8d;
       display: inline-block;
       width: 70px;
     }
-    .skills-list li,
-    .software-list li,
-    .practice-list li {
+    .skills-list li {
       display: inline-block;
-      background: var(--accent-color);
+      background: #3498db;
       color: #fff;
       padding: 0.3rem 0.6rem;
-      border-radius: var(--radius);
+      border-radius: 6px;
       font-size: 0.85rem;
       margin: 0 0.5rem 0.5rem 0;
     }
-    /* Main content */
     .main-content {
-      background: var(--section-bg);
-      padding: var(--gutter);
-      border-radius: var(--radius);
+      padding: 1rem;
+      border-radius: 6px;
+      background: #ffffff;
     }
     .section {
-      margin-bottom: var(--gutter);
+      margin-bottom: 1.5rem;
     }
     .section h2 {
       font-size: 1.5rem;
       margin-bottom: 0.75rem;
+      color: #3498db;
       position: relative;
       padding-bottom: 0.25rem;
-      color: var(--accent-color);
     }
     .section h2::after {
       content: '';
@@ -256,11 +190,11 @@
       bottom: 0;
       width: 50px;
       height: 3px;
-      background: var(--accent-color);
+      background: #3498db;
       border-radius: 2px;
     }
     .item {
-      margin-bottom: var(--gutter);
+      margin-bottom: 1rem;
     }
     .item-header {
       display: flex;
@@ -280,7 +214,7 @@
     }
     .item-header .item-meta {
       font-size: 0.9rem;
-      color: var(--muted-color);
+      color: #7f8c8d;
     }
     .item-details ul {
       margin: 0.5rem 0 0 1rem;
@@ -289,220 +223,107 @@
     .item-details ul li {
       margin-bottom: 0.5rem;
     }
-    /* Highlight */
-    .highlight {
-      background: var(--accent-color);
-      color: #fff;
-      padding: 0.5rem;
-      border-radius: var(--radius);
-      margin: var(--gutter) 0;
-      font-size: 0.95rem;
-    }
-    /* Dark Mode Toggle */
-    #theme-toggle {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      background: var(--accent-color);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius);
-      padding: 0.5rem;
-      cursor: pointer;
-      font-size: 0.9rem;
-      z-index: 1000;
-      transition: background 0.3s;
-    }
-    #theme-toggle:hover {
-      background: var(--accent-dark);
-    }
-    /* Print tweaks: show resume only */
-    @media print {
-      body * { visibility: hidden; }
-      .resume-container, .resume-container * { visibility: visible; }
-      .resume-container {
-        position: absolute;
-        top: 0; left: 0;
-        width: 100%;
-      }
-      #theme-toggle, #download-btn { display: none; }
-      a::after {
-        content: " (" attr(href) ")";
-        font-size: 0.9em;
-      }
-    }
-    /* Download button */
     #download-btn {
       display: inline-block;
       padding: 0.6rem 1.2rem;
-      background: var(--accent-color);
+      background: #3498db;
       color: #fff;
-      border-radius: var(--radius);
+      border-radius: 6px;
       text-decoration: none;
       font-weight: 600;
       transition: background 0.3s;
-      margin-top: var(--gutter);
       border: none;
+      cursor: pointer;
     }
     #download-btn:hover {
-      background: var(--accent-dark);
+      background: #2980b9;
     }
   </style>
-
-  <!-- html2pdf script -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"
-          crossorigin="anonymous"></script>
 </head>
 <body>
-  <!-- Dark mode toggle -->
-  <button id="theme-toggle">Toggle Theme</button>
-
   <div class="container">
     <!-- Form Panel -->
     <div class="form-panel">
       <h2>Resume Builder</h2>
-
       <!-- Photo URL -->
-      <section>
-        <h3>Photo</h3>
-        <div class="form-group">
-          <label for="input-photo">Photo URL</label>
-          <input type="url" id="input-photo" placeholder="https://example.com/photo.jpg">
-        </div>
+      <section class="form-group">
+        <label for="input-photo">Photo URL</label>
+        <input type="url" id="input-photo" placeholder="https://example.com/photo.jpg">
       </section>
-
       <!-- Personal Info -->
-      <section>
-        <h3>Personal Info</h3>
-        <div class="form-group">
-          <label for="input-name">Full Name</label>
-          <input type="text" id="input-name" placeholder="Your Name">
-        </div>
-        <div class="form-group">
-          <label for="input-title">Title / Profession</label>
-          <input type="text" id="input-title" placeholder="e.g., Paralegal Specialist">
-        </div>
-        <div class="form-group">
-          <label for="input-email">Email</label>
-          <input type="email" id="input-email" placeholder="you@example.com">
-        </div>
-        <div class="form-group">
-          <label for="input-phone">Phone</label>
-          <input type="tel" id="input-phone" placeholder="+1 (555) 123-4567">
-        </div>
-        <div class="form-group">
-          <label for="input-linkedin">LinkedIn URL</label>
-          <input type="url" id="input-linkedin" placeholder="https://linkedin.com/in/...">
-        </div>
-        <div class="form-group">
-          <label for="input-website">Website / Portfolio URL</label>
-          <input type="url" id="input-website" placeholder="https://yourwebsite.com">
-        </div>
+      <section class="form-group">
+        <label for="input-name">Full Name</label>
+        <input type="text" id="input-name" placeholder="Your Name">
       </section>
-
+      <section class="form-group">
+        <label for="input-title">Title / Profession</label>
+        <input type="text" id="input-title" placeholder="e.g., Paralegal">
+      </section>
+      <section class="form-group">
+        <label for="input-email">Email</label>
+        <input type="email" id="input-email" placeholder="you@example.com">
+      </section>
+      <section class="form-group">
+        <label for="input-phone">Phone</label>
+        <input type="tel" id="input-phone" placeholder="+1 (555) 123-4567">
+      </section>
+      <section class="form-group">
+        <label for="input-linkedin">LinkedIn URL</label>
+        <input type="url" id="input-linkedin" placeholder="https://linkedin.com/in/...">
+      </section>
+      <section class="form-group">
+        <label for="input-website">Website / Portfolio URL</label>
+        <input type="url" id="input-website" placeholder="https://yourwebsite.com">
+      </section>
       <!-- Summary -->
-      <section>
-        <h3>Summary / Profile</h3>
-        <div class="form-group">
-          <textarea id="input-summary" placeholder="Brief summary of your background"></textarea>
-        </div>
+      <section class="form-group">
+        <label for="input-summary">Summary / Profile</label>
+        <textarea id="input-summary" placeholder="Brief summary of your background"></textarea>
       </section>
-
       <!-- Experience -->
-      <section>
-        <h3>Experience</h3>
+      <section class="form-group">
+        <label>Experience</label>
         <div id="experience-container"></div>
         <button type="button" id="add-experience" class="add-btn">Add Experience</button>
       </section>
-
       <!-- Education -->
-      <section>
-        <h3>Education</h3>
+      <section class="form-group">
+        <label>Education</label>
         <div id="education-container"></div>
         <button type="button" id="add-education" class="add-btn">Add Education</button>
       </section>
-
       <!-- Skills -->
-      <section>
-        <h3>Skills (comma-separated)</h3>
-        <div class="form-group">
-          <input type="text" id="input-skills" placeholder="Legal Research, Drafting, ...">
-        </div>
+      <section class="form-group">
+        <label for="input-skills">Skills (comma-separated)</label>
+        <input type="text" id="input-skills" placeholder="e.g., Legal Research, Case Management">
       </section>
-
       <!-- Languages -->
-      <section>
-        <h3>Languages (comma-separated)</h3>
-        <div class="form-group">
-          <input type="text" id="input-languages" placeholder="English, French, ...">
-        </div>
+      <section class="form-group">
+        <label for="input-languages">Languages (comma-separated)</label>
+        <input type="text" id="input-languages" placeholder="e.g., English, Spanish">
       </section>
-
-      <!-- Legal Software Proficiency -->
-      <section>
-        <h3>Legal Software Proficiency (comma-separated)</h3>
-        <div class="form-group">
-          <input type="text" id="input-software" placeholder="Clio, Westlaw, LexisNexis, ...">
-        </div>
-      </section>
-
-      <!-- Practice Areas / Case Types -->
-      <section>
-        <h3>Practice Areas / Case Types (comma-separated)</h3>
-        <div class="form-group">
-          <input type="text" id="input-practice" placeholder="Real Estate, Litigation Support, Immigration, ...">
-        </div>
-      </section>
-
       <!-- Projects -->
-      <section>
-        <h3>Projects</h3>
+      <section class="form-group">
+        <label>Projects</label>
         <div id="projects-container"></div>
         <button type="button" id="add-project" class="add-btn">Add Project</button>
       </section>
-
       <!-- Certifications -->
-      <section>
-        <h3>Certifications</h3>
+      <section class="form-group">
+        <label>Certifications</label>
         <div id="certifications-container"></div>
         <button type="button" id="add-certification" class="add-btn">Add Certification</button>
       </section>
-
       <!-- Volunteer -->
-      <section>
-        <h3>Volunteer / Awards</h3>
+      <section class="form-group">
+        <label>Volunteer / Awards</label>
         <div id="volunteer-container"></div>
         <button type="button" id="add-volunteer" class="add-btn">Add Volunteer/Award</button>
       </section>
-
-      <!-- Notary Commission Details -->
-      <section>
-        <h3>Notary Commission Details</h3>
-        <div class="form-group">
-          <label for="input-notary-number">Commission Number</label>
-          <input type="text" id="input-notary-number" placeholder="e.g., 123456789">
-        </div>
-        <div class="form-group">
-          <label for="input-notary-jurisdiction">Jurisdiction</label>
-          <input type="text" id="input-notary-jurisdiction" placeholder="e.g., Ontario, Canada">
-        </div>
-        <div class="form-group">
-          <label for="input-notary-date">Commission Date</label>
-          <input type="date" id="input-notary-date">
-        </div>
+      <!-- Download PDF (handled in preview) -->
+      <section class="form-group">
+        <button type="button" id="download-btn">Download PDF</button>
       </section>
-
-      <!-- Download PDF -->
-      <section>
-        <button id="download-btn">Download PDF</button>
-      </section>
-
-      <!-- Privacy Note -->
-      <p class="privacy-note">
-        Your resume data stays in your browser’s localStorage and is not sent to any server by default.
-        You can clear your browser data anytime to remove it. If you choose to share or save externally,
-        ensure you trust the environment.
-      </p>
     </div>
 
     <!-- Preview Panel -->
@@ -511,24 +332,16 @@
         <!-- Sidebar -->
         <aside class="sidebar">
           <div class="photo" id="preview-photo-container">
-            <!-- image inserted via JS -->
+            <!-- inserted via JS -->
           </div>
           <h2 id="preview-name">Your Name</h2>
           <p class="subtitle" id="preview-title">Your Profession</p>
           <h2>Contact</h2>
-          <ul class="contact-list" id="preview-contact-list">
-            <!-- li items via JS -->
-          </ul>
+          <ul class="contact-list" id="preview-contact-list"></ul>
           <h2>Skills</h2>
           <ul class="skills-list" id="preview-skills-list"></ul>
           <h2>Languages</h2>
           <ul class="languages-list" id="preview-languages-list"></ul>
-          <h2>Software</h2>
-          <ul class="software-list" id="preview-software-list"></ul>
-          <h2>Practice Areas</h2>
-          <ul class="practice-list" id="preview-practice-list"></ul>
-          <h2>Notary Commission</h2>
-          <ul class="contact-list" id="preview-notary-list"></ul>
         </aside>
         <!-- Main Content -->
         <section class="main-content">
@@ -538,14 +351,12 @@
           <div id="preview-projects" class="section"></div>
           <div id="preview-certifications" class="section"></div>
           <div id="preview-volunteer" class="section"></div>
-          <!-- Notary Commission shown in sidebar; no main-content section -->
-          <div id="preview-cta" class="section"></div>
         </section>
       </div>
     </div>
   </div>
 
-  <!-- Templates for dynamic sections -->
+  <!-- Templates for dynamic entries -->
   <template id="experience-template">
     <div class="dynamic-group experience-group">
       <button type="button" class="remove-btn">Remove</button>
@@ -554,12 +365,12 @@
         <input type="text" name="expTitle" placeholder="e.g., Paralegal at Law Firm">
       </div>
       <div class="form-group">
-        <label>Start – End (e.g., Jun 2018 – Present)</label>
+        <label>Date (e.g., Jun 2018 – Present)</label>
         <input type="text" name="expDate" placeholder="e.g., Jun 2018 – Present">
       </div>
       <div class="form-group">
         <label>Details / Achievements</label>
-        <textarea name="expDetails" placeholder="Describe your role, achievements"></textarea>
+        <textarea name="expDetails" placeholder="Describe your role, achievements (one per line)"></textarea>
       </div>
     </div>
   </template>
@@ -592,8 +403,8 @@
         <input type="text" name="projDate" placeholder="e.g., 2021">
       </div>
       <div class="form-group">
-        <label>Description & Link</label>
-        <textarea name="projDetails" placeholder="What you built, link if any"></textarea>
+        <label>Description</label>
+        <textarea name="projDetails" placeholder="What you built, outcomes"></textarea>
       </div>
     </div>
   </template>
@@ -628,33 +439,17 @@
     </div>
   </template>
 
-  <!-- Builder JS -->
   <script>
-    (function() {
-      const container = document.documentElement; // for dark mode toggling
-
-      // DARK MODE TOGGLE
-      const toggleBtn = document.getElementById('theme-toggle');
-      if (toggleBtn) {
-        if (localStorage.getItem('theme') === 'dark') {
-          container.classList.add('dark');
-        }
-        toggleBtn.addEventListener('click', () => {
-          const isDark = container.classList.toggle('dark');
-          localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        });
-      }
-
-      // Helper: escape HTML
+    (function(){
+      // Helper escape
       function escapeHtml(text) {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
       }
-
-      // RENDER PREVIEW
+      // Render preview
       function renderPreview() {
-        // PHOTO
+        // Photo
         const photoUrl = document.getElementById('input-photo').value.trim();
         const photoContainer = document.getElementById('preview-photo-container');
         photoContainer.innerHTML = '';
@@ -664,20 +459,14 @@
           img.alt = document.getElementById('input-name').value.trim() || 'Photo';
           photoContainer.appendChild(img);
         }
-
-        // PERSONAL INFO
+        // Name & Title
         const name = document.getElementById('input-name').value.trim() || 'Your Name';
         const title = document.getElementById('input-title').value.trim() || 'Your Profession';
         document.getElementById('preview-name').textContent = name;
         document.getElementById('preview-title').textContent = title;
-
-        // CONTACT
+        // Contact list
         const contactList = document.getElementById('preview-contact-list');
         contactList.innerHTML = '';
-        const email = document.getElementById('input-email').value.trim();
-        const phone = document.getElementById('input-phone').value.trim();
-        const linkedin = document.getElementById('input-linkedin').value.trim();
-        const website = document.getElementById('input-website').value.trim();
         function addContact(label, href, text) {
           const li = document.createElement('li');
           const span = document.createElement('span');
@@ -686,30 +475,30 @@
           const a = document.createElement('a');
           a.href = href;
           a.textContent = text;
-          a.target = '_blank'; a.rel = 'noopener';
+          a.target = '_blank'; a.rel='noopener';
           li.appendChild(span);
           li.appendChild(a);
           contactList.appendChild(li);
         }
+        const email = document.getElementById('input-email').value.trim();
+        const phone = document.getElementById('input-phone').value.trim();
+        const linkedin = document.getElementById('input-linkedin').value.trim();
+        const website = document.getElementById('input-website').value.trim();
         if (email) addContact('Email:', 'mailto:' + email, email);
         if (phone) addContact('Phone:', 'tel:' + phone, phone);
-        if (linkedin) addContact('LinkedIn:', linkedin, linkedin.replace(/^https?:\/\//, ''));
-        if (website) addContact('Website:', website, website.replace(/^https?:\/\//, ''));
-
-        // SUMMARY
+        if (linkedin) addContact('LinkedIn:', linkedin, linkedin.replace(/^https?:\/\//,''));
+        if (website) addContact('Website:', website, website.replace(/^https?:\/\//,''));
+        // Summary
         const summaryText = document.getElementById('input-summary').value.trim();
         const summarySec = document.getElementById('preview-summary');
-        if (summaryText) {
-          summarySec.innerHTML = '<h2>Summary</h2><p>' + escapeHtml(summaryText) + '</p>';
-        } else {
-          summarySec.innerHTML = '';
-        }
-
-        // EXPERIENCE
+        summarySec.innerHTML = summaryText
+          ? '<h2>Summary</h2><p>' + escapeHtml(summaryText).replace(/\n/g,'<br>') + '</p>'
+          : '';
+        // Experience
         const expContainer = document.getElementById('preview-experience');
         const expGroups = document.querySelectorAll('.experience-group');
         if (expGroups.length) {
-          let html = '<h2>Experience</h2>';
+          let html='<h2>Experience</h2>';
           expGroups.forEach(group => {
             const titleCompany = group.querySelector('input[name="expTitle"]').value.trim();
             const date = group.querySelector('input[name="expDate"]').value.trim();
@@ -722,7 +511,7 @@
               if (details) {
                 html += '<div class="item-details"><ul>';
                 details.split('\n').forEach(line => {
-                  const t = line.trim();
+                  const t=line.trim();
                   if (t) html += '<li>' + escapeHtml(t) + '</li>';
                 });
                 html += '</ul></div>';
@@ -734,12 +523,11 @@
         } else {
           expContainer.innerHTML = '';
         }
-
-        // EDUCATION
+        // Education
         const eduContainer = document.getElementById('preview-education');
         const eduGroups = document.querySelectorAll('.education-group');
         if (eduGroups.length) {
-          let html = '<h2>Education</h2>';
+          let html='<h2>Education</h2>';
           eduGroups.forEach(group => {
             const titleInst = group.querySelector('input[name="eduTitle"]').value.trim();
             const date = group.querySelector('input[name="eduDate"]').value.trim();
@@ -759,64 +547,33 @@
         } else {
           eduContainer.innerHTML = '';
         }
-
-        // SKILLS
+        // Skills
         const skillsContainer = document.getElementById('preview-skills-list');
-        const skillsRaw = document.getElementById('input-skills').value.trim();
         skillsContainer.innerHTML = '';
+        const skillsRaw = document.getElementById('input-skills').value.trim();
         if (skillsRaw) {
-          const skillsArr = skillsRaw.split(',').map(s => s.trim()).filter(s => s);
-          skillsArr.forEach(s => {
+          skillsRaw.split(',').map(s=>s.trim()).filter(s=>s).forEach(s => {
             const li = document.createElement('li');
             li.textContent = s;
             skillsContainer.appendChild(li);
           });
         }
-
-        // LANGUAGES
+        // Languages
         const langContainer = document.getElementById('preview-languages-list');
-        const langRaw = document.getElementById('input-languages').value.trim();
         langContainer.innerHTML = '';
+        const langRaw = document.getElementById('input-languages').value.trim();
         if (langRaw) {
-          const langArr = langRaw.split(',').map(s => s.trim()).filter(s => s);
-          langArr.forEach(s => {
+          langRaw.split(',').map(s=>s.trim()).filter(s=>s).forEach(s => {
             const li = document.createElement('li');
             li.textContent = s;
             langContainer.appendChild(li);
           });
         }
-
-        // SOFTWARE
-        const softwareContainer = document.getElementById('preview-software-list');
-        const softwareRaw = document.getElementById('input-software').value.trim();
-        softwareContainer.innerHTML = '';
-        if (softwareRaw) {
-          const softArr = softwareRaw.split(',').map(s => s.trim()).filter(s => s);
-          softArr.forEach(s => {
-            const li = document.createElement('li');
-            li.textContent = s;
-            softwareContainer.appendChild(li);
-          });
-        }
-
-        // PRACTICE AREAS
-        const practiceContainer = document.getElementById('preview-practice-list');
-        const practiceRaw = document.getElementById('input-practice').value.trim();
-        practiceContainer.innerHTML = '';
-        if (practiceRaw) {
-          const pracArr = practiceRaw.split(',').map(s => s.trim()).filter(s => s);
-          pracArr.forEach(s => {
-            const li = document.createElement('li');
-            li.textContent = s;
-            practiceContainer.appendChild(li);
-          });
-        }
-
-        // PROJECTS
+        // Projects
         const projContainer = document.getElementById('preview-projects');
         const projGroups = document.querySelectorAll('.project-group');
         if (projGroups.length) {
-          let html = '<h2>Projects</h2>';
+          let html='<h2>Projects</h2>';
           projGroups.forEach(group => {
             const name = group.querySelector('input[name="projName"]').value.trim();
             const date = group.querySelector('input[name="projDate"]').value.trim();
@@ -836,12 +593,11 @@
         } else {
           projContainer.innerHTML = '';
         }
-
-        // CERTIFICATIONS
+        // Certifications
         const certContainer = document.getElementById('preview-certifications');
         const certGroups = document.querySelectorAll('.certification-group');
         if (certGroups.length) {
-          let html = '<h2>Certifications</h2>';
+          let html='<h2>Certifications</h2>';
           certGroups.forEach(group => {
             const name = group.querySelector('input[name="certName"]').value.trim();
             const date = group.querySelector('input[name="certDate"]').value.trim();
@@ -856,12 +612,11 @@
         } else {
           certContainer.innerHTML = '';
         }
-
-        // VOLUNTEER / AWARDS
+        // Volunteer / Awards
         const volContainer = document.getElementById('preview-volunteer');
         const volGroups = document.querySelectorAll('.volunteer-group');
         if (volGroups.length) {
-          let html = '<h2>Volunteer & Awards</h2>';
+          let html='<h2>Volunteer & Awards</h2>';
           volGroups.forEach(group => {
             const title = group.querySelector('input[name="volTitle"]').value.trim();
             const date = group.querySelector('input[name="volDate"]').value.trim();
@@ -881,84 +636,27 @@
         } else {
           volContainer.innerHTML = '';
         }
-
-        // NOTARY COMMISSION in sidebar
-        const notaryList = document.getElementById('preview-notary-list');
-        notaryList.innerHTML = '';
-        const notNum = document.getElementById('input-notary-number').value.trim();
-        const notJur = document.getElementById('input-notary-jurisdiction').value.trim();
-        const notDate = document.getElementById('input-notary-date').value;
-        if (notNum || notJur || notDate) {
-          if (notNum) {
-            const li = document.createElement('li');
-            li.innerHTML = '<span class="label">Commission#:</span> ' + escapeHtml(notNum);
-            notaryList.appendChild(li);
-          }
-          if (notJur) {
-            const li = document.createElement('li');
-            li.innerHTML = '<span class="label">Jurisdiction:</span> ' + escapeHtml(notJur);
-            notaryList.appendChild(li);
-          }
-          if (notDate) {
-            const li = document.createElement('li');
-            li.innerHTML = '<span class="label">Date:</span> ' + escapeHtml(notDate);
-            notaryList.appendChild(li);
-          }
-        }
-
-        // CTA: Download PDF
-        const ctaContainer = document.getElementById('preview-cta');
-        ctaContainer.innerHTML = '';
-        const btn = document.createElement('button');
-        btn.id = 'download-btn';
-        btn.textContent = 'Download PDF';
-        btn.addEventListener('click', () => {
-          console.log('Download PDF clicked');
-          const previewEl = document.getElementById('resume-preview');
-          if (!previewEl) {
-            console.error('No preview element found');
-            return;
-          }
-          const filenameBase = name.replace(/\s+/g, '_').toLowerCase() || 'resume';
-          const opt = {
-            margin:       [0.5, 0.5, 0.5, 0.5],
-            filename:     filenameBase + '.pdf',
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2 },
-            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-          };
-          try {
-            html2pdf().set(opt).from(previewEl).save()
-              .then(() => console.log('PDF saved'))
-              .catch(err => console.error('html2pdf error:', err));
-          } catch (e) {
-            console.error('Exception calling html2pdf():', e);
-          }
-        });
-        ctaContainer.appendChild(btn);
-
-        // After rendering preview, also save form state
-        saveToLocal();
       }
 
-      // DYNAMIC GROUP helper
+      // Add dynamic group helper
       function addGroup(containerId, templateId) {
-        const containerEl = document.getElementById(containerId);
+        const container = document.getElementById(containerId);
         const template = document.getElementById(templateId);
         const clone = template.content.firstElementChild.cloneNode(true);
         const removeBtn = clone.querySelector('.remove-btn');
         removeBtn.addEventListener('click', () => {
-          containerEl.removeChild(clone);
+          container.removeChild(clone);
           renderPreview();
         });
+        // On input change, re-render
         clone.querySelectorAll('input, textarea').forEach(el => {
           el.addEventListener('input', renderPreview);
         });
-        containerEl.appendChild(clone);
+        container.appendChild(clone);
         renderPreview();
       }
 
-      // BIND add buttons
+      // Bind add buttons
       document.getElementById('add-experience').addEventListener('click', () => {
         addGroup('experience-container', 'experience-template');
       });
@@ -975,172 +673,34 @@
         addGroup('volunteer-container', 'volunteer-template');
       });
 
-      // BIND simple inputs
+      // Bind simple inputs to re-render
       [
         'input-photo','input-name','input-title','input-email','input-phone',
-        'input-linkedin','input-website','input-summary','input-skills',
-        'input-languages','input-software','input-practice',
-        'input-notary-number','input-notary-jurisdiction','input-notary-date'
+        'input-linkedin','input-website','input-summary','input-skills','input-languages'
       ].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.addEventListener('input', renderPreview);
       });
 
-      // LOCALSTORAGE AUTOSAVE / LOAD
-      function collectData() {
-        const data = {};
-        data.inputPhoto = document.getElementById('input-photo').value.trim();
-        data.inputName = document.getElementById('input-name').value.trim();
-        data.inputTitle = document.getElementById('input-title').value.trim();
-        data.inputEmail = document.getElementById('input-email').value.trim();
-        data.inputPhone = document.getElementById('input-phone').value.trim();
-        data.inputLinkedin = document.getElementById('input-linkedin').value.trim();
-        data.inputWebsite = document.getElementById('input-website').value.trim();
-        data.inputSummary = document.getElementById('input-summary').value.trim();
-        data.inputSkills = document.getElementById('input-skills').value.trim();
-        data.inputLanguages = document.getElementById('input-languages').value.trim();
-        data.inputSoftware = document.getElementById('input-software').value.trim();
-        data.inputPractice = document.getElementById('input-practice').value.trim();
-        data.inputNotaryNumber = document.getElementById('input-notary-number').value.trim();
-        data.inputNotaryJurisdiction = document.getElementById('input-notary-jurisdiction').value.trim();
-        data.inputNotaryDate = document.getElementById('input-notary-date').value;
-
-        // Dynamic arrays
-        data.experience = [];
-        document.querySelectorAll('.experience-group').forEach(group => {
-          const obj = {
-            expTitle: group.querySelector('input[name="expTitle"]').value.trim(),
-            expDate: group.querySelector('input[name="expDate"]').value.trim(),
-            expDetails: group.querySelector('textarea[name="expDetails"]').value.trim()
-          };
-          if (obj.expTitle) data.experience.push(obj);
+      // Download PDF button
+      document.getElementById('download-btn').addEventListener('click', () => {
+        const previewEl = document.getElementById('resume-preview');
+        const name = document.getElementById('input-name').value.trim();
+        const filenameBase = name ? name.replace(/\s+/g,'_').toLowerCase() : 'resume';
+        const opt = {
+          margin: [0.5,0.5,0.5,0.5],
+          filename: filenameBase + '.pdf',
+          image: { type:'jpeg', quality:0.98 },
+          html2canvas: { scale: 2 },
+          jsPDF: { unit:'in', format:'letter', orientation:'portrait' }
+        };
+        html2pdf().set(opt).from(previewEl).save().catch(err => {
+          console.error('html2pdf error:', err);
         });
-        data.education = [];
-        document.querySelectorAll('.education-group').forEach(group => {
-          const obj = {
-            eduTitle: group.querySelector('input[name="eduTitle"]').value.trim(),
-            eduDate: group.querySelector('input[name="eduDate"]').value.trim(),
-            eduDetails: group.querySelector('textarea[name="eduDetails"]').value.trim()
-          };
-          if (obj.eduTitle) data.education.push(obj);
-        });
-        data.projects = [];
-        document.querySelectorAll('.project-group').forEach(group => {
-          const obj = {
-            projName: group.querySelector('input[name="projName"]').value.trim(),
-            projDate: group.querySelector('input[name="projDate"]').value.trim(),
-            projDetails: group.querySelector('textarea[name="projDetails"]').value.trim()
-          };
-          if (obj.projName) data.projects.push(obj);
-        });
-        data.certifications = [];
-        document.querySelectorAll('.certification-group').forEach(group => {
-          const obj = {
-            certName: group.querySelector('input[name="certName"]').value.trim(),
-            certDate: group.querySelector('input[name="certDate"]').value.trim()
-          };
-          if (obj.certName) data.certifications.push(obj);
-        });
-        data.volunteer = [];
-        document.querySelectorAll('.volunteer-group').forEach(group => {
-          const obj = {
-            volTitle: group.querySelector('input[name="volTitle"]').value.trim(),
-            volDate: group.querySelector('input[name="volDate"]').value.trim(),
-            volDetails: group.querySelector('textarea[name="volDetails"]').value.trim()
-          };
-          if (obj.volTitle) data.volunteer.push(obj);
-        });
-        return data;
-      }
-      function saveToLocal() {
-        try {
-          const data = collectData();
-          localStorage.setItem('resumeBuilderData', JSON.stringify(data));
-          console.log('Form data saved to localStorage');
-        } catch (e) {
-          console.warn('Failed to save to localStorage:', e);
-        }
-      }
-      function loadFromLocal() {
-        try {
-          const str = localStorage.getItem('resumeBuilderData');
-          if (!str) return;
-          const data = JSON.parse(str);
-          // Simple fields
-          if (data.inputPhoto) document.getElementById('input-photo').value = data.inputPhoto;
-          if (data.inputName) document.getElementById('input-name').value = data.inputName;
-          if (data.inputTitle) document.getElementById('input-title').value = data.inputTitle;
-          if (data.inputEmail) document.getElementById('input-email').value = data.inputEmail;
-          if (data.inputPhone) document.getElementById('input-phone').value = data.inputPhone;
-          if (data.inputLinkedin) document.getElementById('input-linkedin').value = data.inputLinkedin;
-          if (data.inputWebsite) document.getElementById('input-website').value = data.inputWebsite;
-          if (data.inputSummary) document.getElementById('input-summary').value = data.inputSummary;
-          if (data.inputSkills) document.getElementById('input-skills').value = data.inputSkills;
-          if (data.inputLanguages) document.getElementById('input-languages').value = data.inputLanguages;
-          if (data.inputSoftware) document.getElementById('input-software').value = data.inputSoftware;
-          if (data.inputPractice) document.getElementById('input-practice').value = data.inputPractice;
-          if (data.inputNotaryNumber) document.getElementById('input-notary-number').value = data.inputNotaryNumber;
-          if (data.inputNotaryJurisdiction) document.getElementById('input-notary-jurisdiction').value = data.inputNotaryJurisdiction;
-          if (data.inputNotaryDate) document.getElementById('input-notary-date').value = data.inputNotaryDate;
-
-          // Dynamic arrays: recreate groups
-          if (Array.isArray(data.experience)) {
-            data.experience.forEach(item => {
-              addGroup('experience-container', 'experience-template');
-              const group = document.querySelectorAll('.experience-group:last-child')[0];
-              group.querySelector('input[name="expTitle"]').value = item.expTitle || '';
-              group.querySelector('input[name="expDate"]').value = item.expDate || '';
-              group.querySelector('textarea[name="expDetails"]').value = item.expDetails || '';
-            });
-          }
-          if (Array.isArray(data.education)) {
-            data.education.forEach(item => {
-              addGroup('education-container', 'education-template');
-              const group = document.querySelectorAll('.education-group:last-child')[0];
-              group.querySelector('input[name="eduTitle"]').value = item.eduTitle || '';
-              group.querySelector('input[name="eduDate"]').value = item.eduDate || '';
-              group.querySelector('textarea[name="eduDetails"]').value = item.eduDetails || '';
-            });
-          }
-          if (Array.isArray(data.projects)) {
-            data.projects.forEach(item => {
-              addGroup('projects-container', 'project-template');
-              const group = document.querySelectorAll('.project-group:last-child')[0];
-              group.querySelector('input[name="projName"]').value = item.projName || '';
-              group.querySelector('input[name="projDate"]').value = item.projDate || '';
-              group.querySelector('textarea[name="projDetails"]').value = item.projDetails || '';
-            });
-          }
-          if (Array.isArray(data.certifications)) {
-            data.certifications.forEach(item => {
-              addGroup('certifications-container', 'certification-template');
-              const group = document.querySelectorAll('.certification-group:last-child')[0];
-              group.querySelector('input[name="certName"]').value = item.certName || '';
-              group.querySelector('input[name="certDate"]').value = item.certDate || '';
-            });
-          }
-          if (Array.isArray(data.volunteer)) {
-            data.volunteer.forEach(item => {
-              addGroup('volunteer-container', 'volunteer-template');
-              const group = document.querySelectorAll('.volunteer-group:last-child')[0];
-              group.querySelector('input[name="volTitle"]').value = item.volTitle || '';
-              group.querySelector('input[name="volDate"]').value = item.volDate || '';
-              group.querySelector('textarea[name="volDetails"]').value = item.volDetails || '';
-            });
-          }
-          console.log('Loaded form data from localStorage');
-        } catch (e) {
-          console.warn('Failed to load from localStorage:', e);
-        }
-      }
-
-      // INITIALIZE
-      document.addEventListener('DOMContentLoaded', () => {
-        // First load saved data
-        loadFromLocal();
-        // Then initial render
-        renderPreview();
       });
+
+      // Initial render on load
+      document.addEventListener('DOMContentLoaded', renderPreview);
     })();
   </script>
 </body>
