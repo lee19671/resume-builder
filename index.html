@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Your Name – Resume</title>
+  <title>Resume Builder</title>
   <!-- Google Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -37,7 +37,9 @@
       font-family: var(--font-family);
       background: var(--bg-color);
       color: var(--text-color);
-      line-height: 1.5;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
     a {
       color: var(--accent-color);
@@ -52,7 +54,109 @@
       height: auto;
       display: block;
     }
-    /* Container */
+    button { cursor: pointer; }
+    /* Dark Mode Variables */
+    .dark {
+      --bg-color: #2c3e50;
+      --text-color: #ecf0f1;
+      --section-bg: #34495e;
+      --sidebar-bg: #3b4a59;
+      --muted-color: #bdc3c7;
+      --accent-color: #e67e22;
+      --accent-dark: #d35400;
+    }
+
+    /* ====== Layout: form + preview ====== */
+    .container {
+      display: flex;
+      flex: 1 1 auto;
+      overflow: hidden;
+      flex-direction: column;
+    }
+    @media(min-width: 900px) {
+      .container {
+        flex-direction: row;
+      }
+    }
+    /* ====== Form Panel ====== */
+    .form-panel {
+      background: #fff;
+      border-right: 1px solid #ddd;
+      padding: 1rem;
+      flex: 1 1 0;
+      overflow-y: auto;
+      min-height: 0;
+    }
+    .form-panel h2 {
+      margin-top: 0;
+      font-size: 1.5rem;
+      color: var(--accent-color);
+      border-bottom: 2px solid var(--accent-color);
+      padding-bottom: 0.25rem;
+      margin-bottom: 1rem;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.25rem;
+      font-weight: 500;
+    }
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group input[type="tel"],
+    .form-group input[type="url"],
+    .form-group textarea {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: var(--radius);
+      font-size: 1rem;
+    }
+    .form-group textarea { resize: vertical; min-height: 3rem; }
+    .add-btn {
+      display: inline-block;
+      padding: 0.4rem 0.8rem;
+      background: var(--accent-color);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+    .add-btn:hover {
+      background: var(--accent-dark);
+    }
+    .dynamic-group {
+      border: 1px solid #ddd;
+      padding: 1rem;
+      border-radius: var(--radius);
+      margin-bottom: 1rem;
+      position: relative;
+      background: #fafafa;
+    }
+    .dynamic-group .remove-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: transparent;
+      border: none;
+      color: #d00;
+      font-size: 0.9rem;
+    }
+    .dynamic-group .remove-btn:hover {
+      text-decoration: underline;
+    }
+
+    /* ====== Preview Panel ====== */
+    .preview-panel {
+      background: var(--bg-color);
+      padding: 1rem;
+      flex: 1 1 0;
+      overflow-y: auto;
+      min-height: 0;
+    }
     .resume-container {
       width: 90%;
       max-width: var(--max-width);
@@ -78,11 +182,6 @@
       border-radius: 50%;
       overflow: hidden;
       margin-bottom: var(--gutter);
-    }
-    .sidebar .photo img {
-      width: 100%;
-      height: auto;
-      object-fit: cover;
     }
     .sidebar h2 {
       margin: 0 0 0.5rem 0;
@@ -121,10 +220,6 @@
       font-size: 0.85rem;
       margin: 0 0.5rem 0.5rem 0;
     }
-    .languages-list li {
-      font-size: 0.95rem;
-      margin-bottom: 0.3rem;
-    }
     /* Main content */
     .main-content {
       background: var(--section-bg);
@@ -139,6 +234,7 @@
       margin-bottom: 0.75rem;
       position: relative;
       padding-bottom: 0.25rem;
+      color: var(--accent-color);
     }
     .section h2::after {
       content: '';
@@ -150,11 +246,6 @@
       background: var(--accent-color);
       border-radius: 2px;
     }
-    /* Summary */
-    #summary p {
-      margin: 0;
-    }
-    /* Experience / Education / Projects */
     .item {
       margin-bottom: var(--gutter);
     }
@@ -194,48 +285,7 @@
       margin: var(--gutter) 0;
       font-size: 0.95rem;
     }
-    /* Footer / Download CTA */
-    .download-btn {
-      display: inline-block;
-      padding: 0.6rem 1.2rem;
-      background: var(--accent-color);
-      color: #fff;
-      border-radius: var(--radius);
-      text-decoration: none;
-      font-weight: 600;
-      transition: background 0.3s;
-      margin-top: var(--gutter);
-    }
-    .download-btn:hover {
-      background: var(--accent-dark);
-    }
-    /* Print-friendly adjustments */
-    @media print {
-      body {
-        background: #fff;
-        color: #000;
-      }
-      .resume-container {
-        display: block;
-        width: 100%;
-        padding: 0;
-      }
-      .sidebar,
-      .main-content {
-        background: none;
-        padding: 0;
-        border-radius: 0;
-      }
-      #theme-toggle,
-      .download-btn {
-        display: none;
-      }
-      a::after {
-        content: " (" attr(href) ")";
-        font-size: 0.9em;
-      }
-    }
-    /* Dark Mode Toggle Button */
+    /* Dark Mode Toggle */
     #theme-toggle {
       position: fixed;
       top: 1rem;
@@ -253,32 +303,36 @@
     #theme-toggle:hover {
       background: var(--accent-dark);
     }
-    .dark {
-      --bg-color: #2c3e50;
-      --text-color: #ecf0f1;
-      --section-bg: #34495e;
-      --sidebar-bg: #3b4a59;
-      --muted-color: #bdc3c7;
-      --accent-color: #e67e22;
-      --accent-dark: #d35400;
-      background: var(--bg-color);
-      color: var(--text-color);
+    /* Print tweaks: show resume only */
+    @media print {
+      body * { visibility: hidden; }
+      .resume-container, .resume-container * { visibility: visible; }
+      .resume-container {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%;
+      }
+      #theme-toggle, #download-btn { display: none; }
+      a::after {
+        content: " (" attr(href) ")";
+        font-size: 0.9em;
+      }
     }
-    .dark a {
-      color: var(--accent-color);
+    /* Download button */
+    #download-btn {
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      background: var(--accent-color);
+      color: #fff;
+      border-radius: var(--radius);
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.3s;
+      margin-top: var(--gutter);
+      border: none;
     }
-    .dark a:hover {
-      color: var(--accent-dark);
-    }
-    body.dark-mode {
-      background: var(--bg-color);
-      color: var(--text-color);
-    }
-    body.dark-mode .sidebar {
-      background: var(--sidebar-bg);
-    }
-    body.dark-mode .main-content {
-      background: var(--section-bg);
+    #download-btn:hover {
+      background: var(--accent-dark);
     }
   </style>
 </head>
@@ -286,186 +340,91 @@
   <!-- Dark mode toggle -->
   <button id="theme-toggle">Toggle Theme</button>
 
-  <div class="resume-container">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="photo">
-        <!-- Replace src with your photo URL or remove if not desired -->
-        <img src="your-photo.jpg" alt="Your Name" />
-      </div>
-      <h2>Your Name</h2>
-      <p class="subtitle">[Your Profession / Title]</p>
-
-      <h2>Contact</h2>
-      <ul class="contact-list">
-        <li><span class="label">Email:</span>
-          <a href="mailto:admin@soniceresume.com">admin@soniceresume.com</a></li>
-        <li><span class="label">Phone:</span>
-          <a href="tel:+15551234567">+1 (555) 123-4567</a></li>
-        <li><span class="label">LinkedIn:</span>
-          <a href="https://www.linkedin.com/in/yourprofile" target="_blank" rel="noopener">linkedin.com/in/yourprofile</a></li>
-        <li><span class="label">GitHub:</span>
-          <a href="https://github.com/yourusername" target="_blank" rel="noopener">github.com/yourusername</a></li>
-        <li><span class="label">Website:</span>
-          <a href="https://yourwebsite.com" target="_blank" rel="noopener">yourwebsite.com</a></li>
-      </ul>
-
-      <h2>Skills</h2>
-      <ul class="skills-list">
-        <li>Skill A</li>
-        <li>Skill B</li>
-        <li>Skill C</li>
-        <li>Tool/Tech X</li>
-      </ul>
-
-      <h2>Languages</h2>
-      <ul class="languages-list">
-        <li>English (Native)</li>
-        <li>Spanish (Professional)</li>
-      </ul>
-    </aside>
-
-    <!-- Main Content -->
-    <section class="main-content">
+  <div class="container">
+    <!-- Form Panel -->
+    <div class="form-panel">
+      <h2>Resume Builder</h2>
+      <!-- Photo URL -->
+      <section>
+        <h3>Photo</h3>
+        <div class="form-group">
+          <label for="input-photo">Photo URL</label>
+          <input type="url" id="input-photo" placeholder="https://example.com/photo.jpg">
+        </div>
+      </section>
+      <!-- Personal Info -->
+      <section>
+        <h3>Personal Info</h3>
+        <div class="form-group">
+          <label for="input-name">Full Name</label>
+          <input type="text" id="input-name" placeholder="Your Name">
+        </div>
+        <div class="form-group">
+          <label for="input-title">Title / Profession</label>
+          <input type="text" id="input-title" placeholder="e.g., Web Developer">
+        </div>
+        <div class="form-group">
+          <label for="input-email">Email</label>
+          <input type="email" id="input-email" placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+          <label for="input-phone">Phone</label>
+          <input type="tel" id="input-phone" placeholder="+1 (555) 123-4567">
+        </div>
+        <div class="form-group">
+          <label for="input-linkedin">LinkedIn URL</label>
+          <input type="url" id="input-linkedin" placeholder="https://linkedin.com/in/...">
+        </div>
+        <div class="form-group">
+          <label for="input-website">Website / Portfolio URL</label>
+          <input type="url" id="input-website" placeholder="https://yourwebsite.com">
+        </div>
+      </section>
       <!-- Summary -->
-      <div id="summary" class="section">
-        <h2>Summary</h2>
-        <p>
-          Detail-oriented professional with X years of experience in [field]. Adept at …
-        </p>
-      </div>
-
+      <section>
+        <h3>Summary / Profile</h3>
+        <div class="form-group">
+          <textarea id="input-summary" placeholder="Brief summary of your background"></textarea>
+        </div>
+      </section>
       <!-- Experience -->
-      <div id="experience" class="section">
-        <h2>Experience</h2>
-        <div class="item">
-          <div class="item-header">
-            <h3>Senior Web Developer, Company Name</h3>
-            <div class="item-meta">Jan 2020 – Present</div>
-          </div>
-          <div class="item-details">
-            <ul>
-              <li>Built React-based applications, improving performance by 30%.</li>
-              <li>Collaborated with cross-functional teams to deliver accessible UI.</li>
-              <li>Led migration to a headless CMS, reducing deployment times.</li>
-            </ul>
-          </div>
-        </div>
-        <div class="highlight">
-          ✨ Key Achievement: Implemented CI/CD pipeline reducing deployment time from hours to minutes.
-        </div>
-        <!-- Repeat .item blocks for each role -->
-      </div>
-
+      <section>
+        <h3>Experience</h3>
+        <div id="experience-container"></div>
+        <button type="button" id="add-experience" class="add-btn">Add Experience</button>
+      </section>
       <!-- Education -->
-      <div id="education" class="section">
-        <h2>Education</h2>
-        <div class="item">
-          <div class="item-header">
-            <h3>Bachelor of Science in Computer Science, University Name</h3>
-            <div class="item-meta">2015 – 2019</div>
-          </div>
-          <div class="item-details">
-            <p>Graduated with honors. Relevant coursework: Data Structures, Web Dev, Databases.</p>
-          </div>
+      <section>
+        <h3>Education</h3>
+        <div id="education-container"></div>
+        <button type="button" id="add-education" class="add-btn">Add Education</button>
+      </section>
+      <!-- Skills -->
+      <section>
+        <h3>Skills (comma-separated)</h3>
+        <div class="form-group">
+          <input type="text" id="input-skills" placeholder="JavaScript, HTML, CSS, ...">
         </div>
-      </div>
-
+      </section>
+      <!-- Languages -->
+      <section>
+        <h3>Languages (comma-separated)</h3>
+        <div class="form-group">
+          <input type="text" id="input-languages" placeholder="English, Spanish, ...">
+        </div>
+      </section>
       <!-- Projects -->
-      <div id="projects" class="section">
-        <h2>Projects</h2>
-        <div class="item">
-          <div class="item-header">
-            <h3>Project One</h3>
-            <div class="item-meta">2023</div>
-          </div>
-          <div class="item-details">
-            <p>Developed a static-site generator plugin to automate SEO metadata insertion. 
-              <a href="https://github.com/yourusername/project-one" target="_blank" rel="noopener">GitHub</a>
-            </p>
-          </div>
-        </div>
-      </div>
-
+      <section>
+        <h3>Projects</h3>
+        <div id="projects-container"></div>
+        <button type="button" id="add-project" class="add-btn">Add Project</button>
+      </section>
       <!-- Certifications -->
-      <div id="certifications" class="section">
-        <h2>Certifications</h2>
-        <div class="item">
-          <div class="item-header">
-            <h3>Certified XYZ Specialist, Issuing Org</h3>
-            <div class="item-meta">2022</div>
-          </div>
-          <div class="item-details">
-            <p>Credential ID: 123456</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Volunteer & Awards -->
-      <div id="volunteer" class="section">
-        <h2>Volunteer & Awards</h2>
-        <div class="item">
-          <div class="item-header">
-            <h3>Volunteer Role, Organization</h3>
-            <div class="item-meta">2021 – Present</div>
-          </div>
-          <div class="item-details">
-            <p>Brief description of contributions or outcomes.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Download & Contact -->
-      <div id="cta" class="section">
-        <h2>Download & Contact</h2>
-        <p>For a formatted PDF or further discussion:</p>
-        <a
-          href="/YourName_Resume.pdf"
-          download
-          class="download-btn"
-          aria-label="Download PDF version of resume"
-          >Download PDF</a
-        >
-        <a
-          href="mailto:admin@soniceresume.com?subject=Resume%20Inquiry"
-          class="download-btn"
-          style="background: transparent; color: var(--accent-color); border: 2px solid var(--accent-color); margin-left: 1rem;"
-          aria-label="Contact via email"
-          >Contact Me</a
-        >
-      </div>
-    </section>
-  </div>
-
-  <footer style="text-align: center; font-size: 0.9rem; color: var(--muted-color); padding-bottom: var(--gutter);">
-    &copy; <span id="year"></span> Your Name. All rights reserved.
-  </footer>
-
-  <script>
-    // Dark mode toggle logic
-    const toggleBtn = document.getElementById('theme-toggle');
-    if (toggleBtn) {
-      // On load: check localStorage
-      if (localStorage.getItem('theme') === 'dark') {
-        document.body.classList.add('dark-mode');
-        document.documentElement.classList.add('dark');
-      }
-      toggleBtn.addEventListener('click', () => {
-        const isDark = document.body.classList.toggle('dark-mode');
-        if (isDark) {
-          document.documentElement.classList.add('dark');
-          localStorage.setItem('theme', 'dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-          localStorage.setItem('theme', 'light');
-        }
-      });
-    }
-    // Current year
-    const yearEl = document.getElementById('year');
-    if (yearEl) {
-      yearEl.textContent = new Date().getFullYear();
-    }
-  </script>
-</body>
-</html>
+      <section>
+        <h3>Certifications</h3>
+        <div id="certifications-container"></div>
+        <button type="button" id="add-certification" class="add-btn">Add Certification</button>
+      </section>
+      <!-- Volunteer -->
+      <section>
+        <h3>Volunteer / Awards</h3>
